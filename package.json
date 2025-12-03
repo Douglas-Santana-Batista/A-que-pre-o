@@ -1,0 +1,34 @@
+{
+  "name": "drogaria",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "API para sistema de drogaria",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "db:push": "npx drizzle-kit push",
+    "db:studio": "npx drizzle-kit studio",
+    "db:generate": "npx drizzle-kit generate"
+  },
+  "keywords": [
+    "api",
+    "drogaria",
+    "express"
+  ],
+  "author": "Douglas",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.44.7",
+    "express": "^4.22.1",
+    "multer": "^2.0.2",
+    "pdf-parse": "^1.1.1",
+    "pg": "^8.11.3",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.7",
+    "nodemon": "^3.0.1"
+  }
+}

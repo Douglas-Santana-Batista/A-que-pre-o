@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gerador de Etiquetas — Drogaria</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <h1>Gerador de Etiquetas</h1>
+
+      <form id="uploadForm" class="form">
+        <input id="pdf" type="file" accept="application/pdf" />
+        <button type="submit">Enviar PDF</button>
+        <button id="btnClear" type="button">Limpar</button>
+        <span id="status" class="status"></span>
+      </form>
+
+      <div class="controls">
+        <button id="btnPrint">🖨 Imprimir todas</button>
+      </div>
+
+      <section id="etiquetas" class="grid"></section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "schema": "./src/db/schema.js",
+  "out": "./drizzle",
+  "dialect": "postgresql",
+  "dbCredentials": {
+    "url": "postgresql://douglas:Dougras1@localhost:5433/drogaria"
+  }
+}

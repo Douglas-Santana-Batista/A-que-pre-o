@@ -1,0 +1,168 @@
+:root {
+  --bg: #fafafa;
+  --card: #fff;
+  --accent: #000;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  text-align: center;
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: #111;
+  margin: 0;
+  padding: 16px;
+}
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+h1 {
+  margin: 8px 0 18px;
+}
+.form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.status {
+  margin-left: 8px;
+  color: #333;
+}
+.controls {
+  margin: 12px 0;
+}
+
+/* container que mostra as etiquetas em lista; cada etiqueta é pequena e responsiva */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* etiqueta visual no editor (não necessariamente mesma escala da impressão) */
+.etiqueta {
+  width: 380px; /* tamanho da tela, não impressão */
+  min-height: 140px;
+  background: var(--card);
+  border: 2px solid #111;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* topo preto com nome */
+.etiqueta .topo {
+  background: #000;
+  color: #fff;
+  padding: 8px 10px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.1;
+  max-height: 68px;
+  overflow: hidden;
+}
+
+/* linha com De / Por */
+.etiqueta .linha {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 10px;
+  flex: 1;
+}
+.etiqueta .de {
+  border-left: #000 10px;
+  flex: 1;
+  font-size: 13px;
+  color: #333;
+  text-align: center;
+}
+.etiqueta .de span {
+  font-size: 20px;
+  flex: 1;
+  text-align: center;
+}
+.etiqueta .por {
+  flex: 1;
+  text-align: center;
+}
+.etiqueta .por span {
+  font-size: 40px;
+  font-weight: 800;
+  color: #111;
+  display: block;
+}
+
+/* footer com botões de edição */
+.etiqueta .footer {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: #f8f8f8;
+}
+.etiqueta button {
+  flex: 1;
+  padding: 6px;
+  font-size: 13px;
+}
+
+/* editar inputs */
+.input-edit {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* print styles - formato real 10cm x 5cm por etiqueta */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .topo {
+    background: black !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .input-edit {
+    display: none !important;
+  }
+  .footer {
+    display: none !important;
+  }
+  #etiquetas,
+  #etiquetas * {
+    visibility: visible;
+  }
+  #etiquetas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .etiqueta {
+    width: 15cm;
+    height: 5cm;
+    box-shadow: none;
+    border: 1px solid #000;
+    margin: 0;
+    page-break-inside: avoid;
+  }
+  .etiqueta .topo {
+    font-size: 30px;
+    padding: 6px;
+  }
+  .etiqueta .por span {
+    font-size: 40px;
+  }
+  .etiqueta .de span {
+    font-size: 20px;
+  }
+}
