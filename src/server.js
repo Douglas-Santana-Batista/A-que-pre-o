@@ -1,7 +1,7 @@
-// src/server.js
+// src/server.js - CORRIGIDO
 import express from "express";
 import { db } from "./db/connection.js";
-import { produtos } from "./db/schema.js";
+import { produtos as produtosSchema } from "./db/schema.js"; // ✅ Renomeado
 import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
@@ -20,25 +20,35 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// ✅ Rota /process corrigida
 app.post("/process", upload.single("pdf"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Nenhum PDF enviado" });
 
-    const buffer = req.file.buffer;
-    const produtos = await extrairProdutos(buffer);
+    console.log(`📤 Processando PDF: ${req.file.originalname} (${req.file.size} bytes)`);
 
-    return res.json({ produtos });
+    const buffer = req.file.buffer;
+    const produtosExtraidos = await extrairProdutos(buffer); // ✅ Nome diferente
+
+    console.log(`📊 Retornando ${produtosExtraidos.length} produtos`);
+
+    return res.json({
+      produtos: produtosExtraidos,
+      total: produtosExtraidos.length,
+    });
   } catch (err) {
-    console.error("Erro ao processar PDF:", err);
-    return res.status(500).json({ error: "Erro ao processar PDF" });
+    console.error("❌ Erro ao processar PDF:", err);
+    return res.status(500).json({
+      error: "Erro ao processar PDF",
+      detalhes: err.message,
+    });
   }
 });
 
-// ===== ROTA HEALTH CHECK =====
+// ✅ Rota health check corrigida
 app.get("/health", async (req, res) => {
   try {
-    // Testar conexão com o banco
-    await db.select().from(produtos).limit(1);
+    await db.select().from(produtosSchema).limit(1); // ✅ Usa o nome renomeado
 
     res.json({
       status: "healthy",
@@ -54,9 +64,7 @@ app.get("/health", async (req, res) => {
   }
 });
 
-// ===== INICIAR SERVIDOR =====
 app.listen(PORT, () => {
   console.log(`🏪 Drogaria API rodando na porta ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`🛒 Produtos: http://localhost:${PORT}/produtos`);
 });
