@@ -1,14 +1,10 @@
-// src/server.js - CORRIGIDO
 import express from "express";
 import { db } from "./db/connection.js";
-import { produtos as produtosSchema } from "./db/schema.js"; // ✅ Renomeado
-import dotenv from "dotenv";
+import { produtos } from "./db/schema.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
 import { extrairProdutos } from "./services/extractPrice.js";
-
-dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
@@ -48,7 +44,7 @@ app.post("/process", upload.single("pdf"), async (req, res) => {
 // ✅ Rota health check corrigida
 app.get("/health", async (req, res) => {
   try {
-    await db.select().from(produtosSchema).limit(1); // ✅ Usa o nome renomeado
+    await db.select().from(produtos).limit(1);
 
     res.json({
       status: "healthy",
@@ -64,7 +60,10 @@ app.get("/health", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`🏪 Drogaria API rodando na porta ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  console.log(`📊 Health check disponível em:`);
+  console.log(`   http://localhost:${PORT}/health`);
+  console.log(`   http://127.0.0.1:${PORT}/health`);
+  console.log(`   http://0.0.0.0:${PORT}/health`);
 });

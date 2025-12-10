@@ -3,6 +3,6 @@
   "out": "./drizzle",
   "dialect": "postgresql",
   "dbCredentials": {
-    "url": "postgresql://douglas:Dougras1@localhost:5433/drogaria"
+    "url": "postgresql://neondb_owner:npg_tl37wQbxorPS@ep-soft-moon-ahic0lay-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
   }
 }

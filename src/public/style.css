@@ -41,9 +41,9 @@ h1 {
   gap: 12px;
 }
 
-/* etiqueta visual no editor (não necessariamente mesma escala da impressão) */
+/* etiqueta visual no editor (não necessariamente mesma escala da impressão) 
 .etiqueta {
-  width: 380px; /* tamanho da tela, não impressão */
+  width: 380px; tamanho da tela, não impressão 
   min-height: 140px;
   background: var(--card);
   border: 2px solid #111;
@@ -53,6 +53,7 @@ h1 {
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
+/*
 
 /* topo preto com nome */
 .etiqueta .topo {
@@ -148,21 +149,20 @@ h1 {
     width: 100%;
   }
   .etiqueta {
-    width: 15cm;
-    height: 5cm;
+    width: 397px;
+    height: 113px;
     box-shadow: none;
     border: 1px solid #000;
     margin: 0;
     page-break-inside: avoid;
   }
   .etiqueta .topo {
-    font-size: 30px;
-    padding: 6px;
+    font-size: 18px;
   }
   .etiqueta .por span {
-    font-size: 40px;
+    font-size: 22px;
   }
   .etiqueta .de span {
-    font-size: 20px;
+    font-size: 19px;
   }
 }
