@@ -19,7 +19,7 @@ uploadForm.addEventListener("submit", async (ev) => {
 
   statusEl.innerText = "Lendo PDF...";
   try {
-    const resp = await fetch("/process", { method: "POST", body: fd });
+    const resp = await fetch("/api/process", { method: "POST", body: fd });
     const json = await resp.json();
     if (json.error) {
       statusEl.innerText = json.error;
@@ -130,7 +130,7 @@ function attachListenersToEtiquetaCheio(el) {
   const previewCheio = el.querySelector(".previewCheio");
 
   if (inputCheio && previewCheio) {
-    inputPromo.addEventListener("input", () => {
+    inputCheio.addEventListener("input", () => {
       previewCheio.innerText = inputCheio.value;
     });
   }
