@@ -1,10 +1,10 @@
 import express from "express";
-import { db } from "./src/db/connection.js";
-import { produtos } from "./src/db/schema.js";
+import { db } from "./db/connection.js";
+import { produtos } from "./db/schema.js";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
-import { extrairProdutos } from "./src/services/extractPrice.js";
+import { extrairProdutos } from "./services/extractPrice.js";
 
 const PORT = process.env.PORT || 3000;
 
