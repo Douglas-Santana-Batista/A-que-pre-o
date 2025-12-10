@@ -2,7 +2,7 @@ import { extrairProdutos } from "../src/services/extractPrice.js";
 
 export const config = {
   api: {
-    bodyParser: false, // necessário para usar FormData
+    bodyParser: false,
   },
 };
 
