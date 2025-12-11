@@ -83,13 +83,13 @@ export async function extrairProdutos(buffer) {
 
       if (!codigo && i > 0 && !linhas[i - 1].match(/\d{1,3},\d{2}$/)) {
         // MAS NÃO PODE SER "VARIOS SABORES"
-        if (!linhas[i - 1].toUpperCase().includes("VARIOS SABORES")) {
+        if (!linhas[i - 1].toUpperCase().includes("VARIOS SABORES", "VARIAS APRESENTAÇÕES")) {
           descricao = linhas[i - 1].trim();
         }
       }
 
       // === 4) AGORA SIM: SE TIVER "VARIOS SABORES", BUSCAR PELA DESCRIÇÃO ===
-      if (linha.toUpperCase().includes("VARIOS SABORES")) {
+      if (linha.toUpperCase().includes("VARIOS SABORES", "VARIAS APRESENTAÇÕES")) {
         try {
           const buscaDesc = await db
             .select({
