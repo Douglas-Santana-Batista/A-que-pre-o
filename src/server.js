@@ -21,12 +21,8 @@ app.post("/process", upload.single("pdf"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "Nenhum PDF enviado" });
 
-    console.log(`📤 Processando PDF: ${req.file.originalname} (${req.file.size} bytes)`);
-
     const buffer = req.file.buffer;
-    const produtosExtraidos = await extrairProdutos(buffer); // ✅ Nome diferente
-
-    console.log(`📊 Retornando ${produtosExtraidos.length} produtos`);
+    const produtosExtraidos = await extrairProdutos(buffer);
 
     return res.json({
       produtos: produtosExtraidos,

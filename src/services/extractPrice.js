@@ -43,78 +43,85 @@ async function buscarPrecosNoBanco(codigos) {
 export async function extrairProdutos(buffer) {
   try {
     const data = await pdfParse(buffer);
-    const texto = data.text;
+    let texto = data.text;
 
-    console.log("PDF OK — iniciando extração...");
+    // NORMALIZAÇÃO BÁSICA
+    texto = texto
+      .replace(/ {2,}/g, " ") // remove colunas extras
+      .replace(/\t+/g, " ")
+      .replace(/\s+$/gm, "")
+      .trim();
 
-    // Captura todos os códigos do PDF
-    const regexCodigo = /\b\d{12,13}\b/g;
-    const codigosExtraidos = texto.match(regexCodigo) || [];
+    // REGEX UNIVERSAIS
+    const REGEX_COD_BARRAS = /\b\d{8,14}\b/g; // EAN 8, 12, 13, 14
+    const REGEX_PRECO = /\b\d{1,3}(?:\.\d{3})*,\d{2}\b/;
+    const REGEX_PRECOS = /\b\d{1,3}(?:\.\d{3})*,\d{2}\b/g;
 
-    // Preços do banco
-    const precosDoBanco = await buscarPrecosNoBanco(codigosExtraidos);
-
+    // SEPARA LINHAS
     const linhas = texto
       .split("\n")
       .map((l) => l.trim())
       .filter((l) => l.length > 0);
+
+    // TODOS OS CODIGOS PARA BUSCAR NO BANCO
+    const todosCodigos = texto.match(REGEX_COD_BARRAS) || [];
+
+    const precosDoBanco = await buscarPrecosNoBanco(todosCodigos);
 
     const produtosFinal = [];
 
     for (let i = 0; i < linhas.length; i++) {
       let linha = linhas[i];
 
-      if (linha.toUpperCase().includes("NÃO TEM")) continue;
+      if (linha.includes("NÃO TEM") || linha.includes("SEM ESTOQUE") || linha.includes("INATIVO")) continue;
 
-      // PRECISO CAPTURAR PREÇO NA LINHA
-      const precoMatch = linha.match(/(\d{1,3}(?:\.\d{3})*,\d{2})$/);
-      if (!precoMatch) continue;
+      const precoEncontrado = linha.match(REGEX_PRECOS);
+      if (!precoEncontrado) continue;
 
-      const precoPDF = precoMatch[1];
-      const textoAntes = linha.replace(precoPDF, "").trim();
+      const precoPDF = precoEncontrado[precoEncontrado.length - 1];
 
-      let descricao = textoAntes;
-      let codigo = null;
+      let codigo = (linha.match(REGEX_COD_BARRAS) || [])[0];
 
-      // SE LINHA ANTERIOR FOR CÓDIGO
-      if (i > 0 && /^\d{12,13}$/.test(linhas[i - 1])) {
-        codigo = linhas[i - 1].trim();
+      if (!codigo && i > 0) {
+        const acima = linhas[i - 1].match(REGEX_COD_BARRAS);
+        if (acima) codigo = acima[0];
       }
 
-      if (!codigo && i > 0 && !linhas[i - 1].match(/\d{1,3},\d{2}$/)) {
-        // MAS NÃO PODE SER "VARIOS SABORES"
-        if (!linhas[i - 1].toUpperCase().includes("VARIOS SABORES", "VARIAS APRESENTAÇÕES")) {
-          descricao = linhas[i - 1].trim();
+      if (!codigo && i + 1 < linhas.length) {
+        const abaixo = linhas[i + 1].match(REGEX_COD_BARRAS);
+        if (abaixo) codigo = abaixo[0];
+      }
+
+      let descricao = linha.replace(precoPDF, "").replace(REGEX_COD_BARRAS, "").trim();
+
+      if (!descricao || descricao.length < 4) {
+        if (i > 0) {
+          const linhaSuperior = linhas[i - 1];
+          if (!linhaSuperior.match(REGEX_PRECO) && !linhaSuperior.match(REGEX_COD_BARRAS)) {
+            descricao = linhaSuperior.trim();
+          }
         }
       }
 
-      // === 4) AGORA SIM: SE TIVER "VARIOS SABORES", BUSCAR PELA DESCRIÇÃO ===
-      if (linha.toUpperCase().includes("VARIOS SABORES", "VARIAS APRESENTAÇÕES")) {
+      if (descricao.toUpperCase().includes("VARIOS SABORES") || descricao.toUpperCase().includes("VARIAS APRESENTACOES") || descricao.toUpperCase().includes("VARIAS APRESENTAÇÕES")) {
         try {
           const buscaDesc = await db
             .select({
               codigo: produtos.codigoBarras,
-              descricao: produtos.descricao,
-              precoCheio: produtos.precoVenda,
-              precoReferencial: produtos.precoReferencial,
+              desc: produtos.descricao,
+              cheio: produtos.precoVenda,
+              promo: produtos.precoReferencial,
             })
             .from(produtos)
-            .where(like(produtos.descricao, `%${descricao}%`)); // agora descricao já existe!
+            .where(like(produtos.descricao, `%${descricao.split(" ")[0]}%`));
 
           if (buscaDesc.length > 0) {
-            precoCheio = buscaDesc[0].precoCheio;
             codigo = buscaDesc[0].codigo;
-
-            console.log("🔎 Encontrado no banco via descrição:", buscaDesc[0]);
           }
-        } catch (error) {
-          console.error("Erro buscando descrição:", error);
+        } catch (e) {
+          console.log("Erro busca descrição:", e);
         }
       }
-
-      // ========================================
-      // TENTA PUXAR PREÇO DO BANCO PELO CÓDIGO
-      // ========================================
 
       let precoCheio = null;
 
@@ -122,25 +129,24 @@ export async function extrairProdutos(buffer) {
         precoCheio = precosDoBanco[codigo].cheio;
       }
 
-      // ========================================
-      // FALLBACK → USA PREÇO DO PDF
-      // ========================================
+      if (!precoCheio && precoEncontrado.length > 1) {
+        precoCheio = precoEncontrado[0];
+      }
+
       if (!precoCheio) precoCheio = precoPDF;
 
       produtosFinal.push({
         descricao,
-        preco_cheio: precoCheio,
-        preco_pdf: precoPDF,
-        codigo,
+        cheio: String(precoCheio),
+        promo: String(precoPDF),
+        codigo: codigo || null,
       });
     }
 
-    console.log(`EXTRAÍDOS: ${produtosFinal.length}`);
-
     return produtosFinal.map((p) => ({
       descricao: p.descricao,
-      cheio: String(p.preco_cheio || ""),
-      promo: String(p.preco_pdf || ""),
+      cheio: p.cheio,
+      promo: p.promo,
     }));
   } catch (err) {
     console.error("Erro geral:", err);
