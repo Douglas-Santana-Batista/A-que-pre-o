@@ -82,15 +82,7 @@ export async function extrairProdutos(buffer) {
 
       let codigo = (linha.match(REGEX_COD_BARRAS) || [])[0];
 
-      if (!codigo && i > 0) {
-        const acima = linhas[i - 1].match(REGEX_COD_BARRAS);
-        if (acima) codigo = acima[0];
-      }
-
-      if (!codigo && i + 1 < linhas.length) {
-        const abaixo = linhas[i + 1].match(REGEX_COD_BARRAS);
-        if (abaixo) codigo = abaixo[0];
-      }
+      if (!codigo) codigo = null;
 
       let descricao = linha.replace(precoPDF, "").replace(REGEX_COD_BARRAS, "").trim();
 
@@ -129,15 +121,9 @@ export async function extrairProdutos(buffer) {
         precoCheio = precosDoBanco[codigo].cheio;
       }
 
-      if (!precoCheio && precoEncontrado.length > 1) {
-        precoCheio = precoEncontrado[0];
-      }
-
-      if (!precoCheio) precoCheio = precoPDF;
-
       produtosFinal.push({
         descricao,
-        cheio: String(precoCheio),
+        cheio: precoCheio ? String(precoCheio) : "",
         promo: String(precoPDF),
         codigo: codigo || null,
       });
