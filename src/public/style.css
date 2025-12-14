@@ -69,6 +69,19 @@ h1 {
   overflow: hidden;
 }
 
+.topo-input {
+  border: 0;
+  background: #000;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* linha com De / Por */
 .etiqueta .linha {
   display: flex;
@@ -94,8 +107,9 @@ h1 {
   text-align: center;
 }
 .etiqueta .por span {
-  font-size: 40px;
-  font-weight: 800;
+  font-weight: bold;
+  font-size: 70px;
+  font-weight: 800px;
   color: #111;
   display: block;
 }
@@ -153,7 +167,7 @@ h1 {
     width: 387px;
     height: 113px;
     box-shadow: none;
-    border: 1px solid #000;
+    border: none;
     margin: 0;
     page-break-inside: avoid;
   }
@@ -161,7 +175,9 @@ h1 {
     font-size: 17px;
   }
   .etiqueta .por span {
-    font-size: 22px;
+    display: inline;
+    font-weight: bold;
+    font-size: 30px;
   }
   .etiqueta .de span {
     font-size: 19px;

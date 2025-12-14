@@ -51,24 +51,28 @@ function renderProdutos(produtos) {
 
     // conteudo principal
     el.innerHTML = `
-        <div class="topo" title="${escapeHtml(p.descricao)}">${escapeHtml(p.descricao)}</div>
-        <div class="linha">
-          <div class="de">
-            <label>De:</label>
-            <input class="input-edit cheio" value="${escapeHtml(p.cheio)}">
-            <span class="previewCheio">${escapeHtml(p.cheio)}</span>
-          </div>
-          <div class="por">
-            <label>Por:</label>
-            <input class="input-edit promo" value="${escapeHtml(p.promo)}">
-            <span class="previewPromo">${escapeHtml(p.promo)}</span>
-          </div>
-        </div>
-        <div class="footer">
-          <button class="btnUp">▲</button>
-          <button class="btnDown">▼</button>
-          <button class="btnDup">Duplicar</button>
-          <button class="btnDel">Excluir</button>
+        <div class="etiqueta">
+            <div class="topo">
+              <textarea class="topo-input">${escapeHtml(p.descricao)}</textarea>
+            </div>
+            <div class="linha">
+              <div class="de">
+                <label>De:</label>
+                <input class="input-edit cheio" value="${escapeHtml(p.cheio)}">
+                <span class="previewCheio">${escapeHtml(p.cheio)}</span>
+              </div>
+              <div class="por">
+                <label>Por:</label>
+                <input class="input-edit promo" value="${escapeHtml(p.promo)}">
+                <span class="previewPromo">${escapeHtml(p.promo)}</span>
+              </div>
+            </div>
+            <div class="footer">
+              <button class="btnUp">▲</button>
+              <button class="btnDown">▼</button>
+              <button class="btnDup">Duplicar</button>
+              <button class="btnDel">Excluir</button>
+            </div>
         </div>
     `;
 
