@@ -15,7 +15,7 @@ uploadForm.addEventListener("submit", async (ev) => {
   }
 
   const fd = new FormData();
-  fd.append("pdf", pdfInput.files[0]);
+  fd.append("file", pdfInput.files[0]);
 
   statusEl.innerText = "Lendo PDF...";
   try {

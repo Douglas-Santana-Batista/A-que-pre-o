@@ -1,20 +1,12 @@
-// db/connection.js - CORRIGIDO
-import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import * as schema from "./schema.js";
-import dotenv from "dotenv";
-dotenv.config();
+import { drizzle } from "drizzle-orm/postgres-js";
 
-// Conexão com SSL para Neon
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("DATABASE_URL não encontrada no .env");
-}
-
-const client = postgres(connectionString, {
-  ssl: "require",
-  max: 1,
+const client = postgres(process.env.DATABASE_URL, {
+  ssl: "require", // 👈 STRING, não objeto
+  max: 1, // 👈 obrigatório no Railway
+  prepare: false, // 👈 proxy não suporta bem
+  idle_timeout: 10,
+  connect_timeout: 10,
 });
 
-export const db = drizzle(client, { schema });
+export const db = drizzle(client);
